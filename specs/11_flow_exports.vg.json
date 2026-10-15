@@ -1,0 +1,505 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "CHART 11 - Origin-destination flow map (map idiom 3). Flows run from Australia to its ten largest agricultural export markets in 2023-24; line width is proportional to export value (A$ million). Data: DFAT 'Agricultural trade' page, table 'Australia's major agricultural export markets, 2023-24' (DFAT's source: ABARES Agricultural Commodities, September quarter 2025), typed into exports.csv. Flows are gently curved (points made in prepare_data.py, exports_paths.csv) so they fan out instead of overlapping near Australia; as in any origin-destination flow map the path is not a real shipping route. Colours: Malaysia navy, other markets warm grey (green is kept for productivity on this page). Smaller flows are drawn on top of larger ones. Projection: Equal Earth (equal-area, suited to world maps), centred on the Pacific so Asia, Australia and the United States all fit.",
+  "width": "container",
+  "height": 430,
+  "projection": {
+    "type": "equalEarth",
+    "rotate": [
+      -175,
+      0,
+      0
+    ],
+    "fit": {
+      "type": "Feature",
+      "geometry": {
+        "type": "MultiPoint",
+        "coordinates": [
+          [
+            66,
+            -47
+          ],
+          [
+            -72,
+            55
+          ],
+          [
+            66,
+            55
+          ],
+          [
+            -72,
+            -47
+          ]
+        ]
+      },
+      "properties": {}
+    }
+  },
+  "layer": [
+    {
+      "description": "Base map. Australia is filled green (the origin) and Malaysia navy; other countries are neutral.",
+      "data": {
+        "url": "data/world_countries.topojson",
+        "format": {
+          "type": "topojson",
+          "feature": "countries"
+        }
+      },
+      "mark": {
+        "type": "geoshape",
+        "stroke": "#FBF8F1",
+        "strokeWidth": 0.5,
+        "clip": true
+      },
+      "encoding": {
+        "color": {
+          "condition": [
+            {
+              "test": "datum.properties.name === 'Malaysia'",
+              "value": "#9FB0D6"
+            },
+            {
+              "test": "datum.properties.name === 'Australia'",
+              "value": "#CDC5AE"
+            }
+          ],
+          "value": "#E4DFD1"
+        }
+      }
+    },
+    {
+      "description": "Curved flows: one line per market, drawn through its 25 points in order (order = step). Width = export value. exports_paths.csv lists China first and Malaysia last, so smaller flows are drawn on top of larger ones.",
+      "data": {
+        "url": "data/exports_paths.csv",
+        "format": {
+          "type": "csv",
+          "parse": {
+            "value_m": "number",
+            "share": "number",
+            "rank": "number",
+            "step": "number",
+            "lon": "number",
+            "lat": "number"
+          }
+        }
+      },
+      "transform": [
+        {
+          "calculate": "datum.country === 'Malaysia' ? 'Malaysia' : 'Other markets'",
+          "as": "highlight"
+        },
+        {
+          "calculate": "'A$' + format(datum.value_m / 1000, '.1f') + ' billion (' + format(datum.share, '.1f') + '% of all farm exports)'",
+          "as": "value_text"
+        }
+      ],
+      "mark": {
+        "type": "line",
+        "strokeCap": "round",
+        "opacity": 0.85,
+        "clip": true
+      },
+      "encoding": {
+        "longitude": {
+          "field": "lon",
+          "type": "quantitative"
+        },
+        "latitude": {
+          "field": "lat",
+          "type": "quantitative"
+        },
+        "detail": {
+          "field": "country"
+        },
+        "order": {
+          "field": "step"
+        },
+        "strokeWidth": {
+          "field": "value_m",
+          "type": "quantitative",
+          "scale": {
+            "domain": [
+              0,
+              16156
+            ],
+            "range": [
+              0,
+              18
+            ]
+          },
+          "legend": null
+        },
+        "color": {
+          "field": "highlight",
+          "type": "nominal",
+          "scale": {
+            "domain": [
+              "Malaysia",
+              "Other markets"
+            ],
+            "range": [
+              "#1F3A93",
+              "#8C8576"
+            ]
+          },
+          "legend": null
+        },
+        "tooltip": [
+          {
+            "field": "rank",
+            "title": "Rank"
+          },
+          {
+            "field": "country",
+            "title": "Market"
+          },
+          {
+            "field": "value_text",
+            "title": "Exports 2023–24"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Small dot at each destination.",
+      "data": {
+        "url": "data/exports.csv",
+        "format": {
+          "type": "csv",
+          "parse": {
+            "value_m": "number",
+            "share": "number",
+            "rank": "number",
+            "lon": "number",
+            "lat": "number"
+          }
+        }
+      },
+      "mark": {
+        "type": "circle",
+        "size": 28,
+        "color": "#1E1E1E",
+        "opacity": 1
+      },
+      "encoding": {
+        "longitude": {
+          "field": "lon",
+          "type": "quantitative"
+        },
+        "latitude": {
+          "field": "lat",
+          "type": "quantitative"
+        }
+      }
+    },
+    {
+      "description": "Labels: market name and value. Most sit to the right of the dot; India, China and Vietnam sit to the left and Korea above, to avoid overlaps.",
+      "data": {
+        "url": "data/exports.csv",
+        "format": {
+          "type": "csv",
+          "parse": {
+            "value_m": "number",
+            "share": "number",
+            "rank": "number",
+            "lon": "number",
+            "lat": "number"
+          }
+        }
+      },
+      "transform": [
+        {
+          "calculate": "datum.country === 'Republic of Korea' ? 'Korea' : datum.country",
+          "as": "short"
+        },
+        {
+          "calculate": "datum.short + ' A$' + format(datum.value_m / 1000, '.1f') + ' bn'",
+          "as": "label"
+        },
+        {
+          "calculate": "datum.country === 'Malaysia' ? 'malaysia' : datum.country === 'Republic of Korea' ? 'above' : indexof(['India', 'China', 'Vietnam'], datum.country) >= 0 ? 'left' : 'right'",
+          "as": "side"
+        }
+      ],
+      "layer": [
+        {
+          "transform": [
+            {
+              "filter": "datum.side === 'right'"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "dx": 7,
+            "fontSize": 11.5
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "label"
+            },
+            "color": {
+              "value": "#1E1E1E"
+            }
+          }
+        },
+        {
+          "transform": [
+            {
+              "filter": "datum.side === 'left'"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "align": "right",
+            "dx": -7,
+            "fontSize": 11.5
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "label"
+            },
+            "color": {
+              "value": "#1E1E1E"
+            }
+          }
+        },
+        {
+          "description": "Malaysia's label: bold, navy and slightly larger, because the page is written for Malaysian readers.",
+          "transform": [
+            {
+              "filter": "datum.side === 'malaysia'"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "align": "right",
+            "dx": -8,
+            "dy": 2,
+            "fontSize": 13.5,
+            "fontWeight": "bold",
+            "color": "#1F3A93"
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "label"
+            }
+          }
+        },
+        {
+          "description": "Korea's label sits above its dot so it does not run into Japan's.",
+          "transform": [
+            {
+              "filter": "datum.side === 'above'"
+            }
+          ],
+          "mark": {
+            "type": "text",
+            "align": "right",
+            "dy": -10,
+            "fontSize": 11.5,
+            "color": "#1E1E1E",
+            "dx": 6
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "text": {
+              "field": "label"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "description": "Line-width key in the southern Indian Ocean. The three sample lines are drawn in pixels from one anchor point (a point mark whose shape is an SVG path; size 4 makes path units = pixels), with widths from the same scale as the flows: A$2b = 2.2 px, A$8b = 8.9 px, A$16b = 17.8 px.",
+      "data": {
+        "values": [
+          {
+            "lon": 74,
+            "lat": -36
+          }
+        ]
+      },
+      "layer": [
+        {
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "dy": -18,
+            "fontSize": 11,
+            "fontWeight": "bold",
+            "color": "#4A4A42"
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "text": {
+              "value": "Exports, 2023–24"
+            }
+          }
+        },
+        {
+          "mark": {
+            "type": "point",
+            "size": 4,
+            "filled": true,
+            "opacity": 0.85,
+            "color": "#8C8576",
+            "shape": "M0,-1.115 L46,-1.115 L46,1.115 L0,1.115 Z M0,13.545 L46,13.545 L46,22.455 L0,22.455 Z M0,31.085 L46,31.085 L46,48.915 L0,48.915 Z"
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            }
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "baseline": "middle",
+            "dx": 54,
+            "dy": 0,
+            "fontSize": 11,
+            "color": "#4A4A42"
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "text": {
+              "value": "A$2 bn"
+            }
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "baseline": "middle",
+            "dx": 54,
+            "dy": 18,
+            "fontSize": 11,
+            "color": "#4A4A42"
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "text": {
+              "value": "A$8 bn"
+            }
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "baseline": "middle",
+            "dx": 54,
+            "dy": 40,
+            "fontSize": 11,
+            "color": "#4A4A42"
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "text": {
+              "value": "A$16 bn"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "description": "Label for the origin of all flows.",
+      "data": {
+        "values": [
+          {
+            "lon": 134,
+            "lat": -25.5
+          }
+        ]
+      },
+      "mark": {
+        "type": "text",
+        "fontSize": 12,
+        "fontWeight": "bold",
+        "color": "#1E1E1E",
+        "dy": 22
+      },
+      "encoding": {
+        "longitude": {
+          "field": "lon",
+          "type": "quantitative"
+        },
+        "latitude": {
+          "field": "lat",
+          "type": "quantitative"
+        },
+        "text": {
+          "value": "Australia"
+        }
+      }
+    }
+  ]
+}

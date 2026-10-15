@@ -1,0 +1,219 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "CHART 4 - Waterfall small multiples. For each industry: step 1 = output growth (ABARES table 9), step 2 = the effect of inputs, which is input growth (table 8) with its sign flipped because using MORE inputs pulls productivity DOWN, step 3 = productivity growth (table 7). All are average % per year, 1977-78 to 2024-25, All Australia. Step 3 can differ from steps 1+2 by 0.1 because ABARES rounds each rate separately.",
+  "data": {
+    "url": "data/growth_decomposition.csv",
+    "format": {
+      "type": "csv",
+      "parse": {
+        "output_growth": "number",
+        "input_growth": "number",
+        "productivity_growth": "number"
+      }
+    }
+  },
+  "transform": [
+    {
+      "calculate": "[{step: 'Output', start: 0, end: datum.output_growth, label: datum.output_growth}, {step: 'Inputs', start: datum.output_growth, end: datum.output_growth - datum.input_growth, label: -datum.input_growth}, {step: 'Productivity', start: 0, end: datum.productivity_growth, label: datum.productivity_growth}]",
+      "as": "steps"
+    },
+    {
+      "flatten": [
+        "steps"
+      ]
+    },
+    {
+      "calculate": "datum.steps.step",
+      "as": "step"
+    },
+    {
+      "calculate": "datum.steps.start",
+      "as": "start"
+    },
+    {
+      "calculate": "datum.steps.end",
+      "as": "end"
+    },
+    {
+      "calculate": "datum.steps.label",
+      "as": "label"
+    },
+    {
+      "calculate": "(datum.label > 0 ? '+' : '') + format(datum.label, '.1f')",
+      "as": "label_text"
+    },
+    {
+      "calculate": "datum.end >= datum.start ? max(datum.start, datum.end) : min(datum.start, datum.end)",
+      "as": "label_y"
+    },
+    {
+      "calculate": "datum.step === 'Output' ? 'Output grew ' + format(datum.output_growth, '+.1f') + '% a year' : datum.step === 'Inputs' ? 'Inputs grew ' + format(datum.input_growth, '+.1f') + '% a year, so their effect on productivity is ' + datum.label_text : 'Productivity grew ' + format(datum.productivity_growth, '+.1f') + '% a year'",
+      "as": "explain"
+    }
+  ],
+  "facet": {
+    "column": {
+      "field": "industry",
+      "type": "nominal",
+      "sort": [
+        "All broadacre",
+        "Cropping",
+        "Mixed crop-livestock",
+        "Beef",
+        "Sheep-beef",
+        "Sheep"
+      ],
+      "header": {
+        "title": null,
+        "labelFontSize": 13,
+        "labelFontWeight": "bold",
+        "labelAnchor": "start",
+        "labelColor": "#1F3B24",
+        "labelExpr": "datum.value === 'Mixed crop-livestock' ? 'Mixed' : datum.value"
+      }
+    }
+  },
+  "spacing": 14,
+  "spec": {
+    "width": 140,
+    "height": 210,
+    "encoding": {
+      "x": {
+        "field": "step",
+        "type": "nominal",
+        "sort": [
+          "Output",
+          "Inputs",
+          "Productivity"
+        ],
+        "axis": {
+          "title": null,
+          "labelAngle": 0,
+          "labelFontSize": 10,
+          "ticks": false,
+          "domain": false,
+          "labelExpr": "datum.value === 'Productivity' ? 'Result' : datum.value"
+        }
+      }
+    },
+    "layer": [
+      {
+        "mark": {
+          "type": "rule",
+          "color": "#9A9A8E"
+        },
+        "encoding": {
+          "x": null,
+          "y": {
+            "datum": 0
+          }
+        }
+      },
+      {
+        "mark": {
+          "type": "bar",
+          "width": {
+            "band": 0.72
+          }
+        },
+        "encoding": {
+          "y": {
+            "field": "start",
+            "type": "quantitative",
+            "scale": {
+              "domain": [
+                -4,
+                4
+              ]
+            },
+            "axis": {
+              "title": "% change per year",
+              "tickCount": 5,
+              "grid": true
+            }
+          },
+          "y2": {
+            "field": "end"
+          },
+          "color": {
+            "field": "step",
+            "type": "nominal",
+            "scale": {
+              "domain": [
+                "Output",
+                "Inputs",
+                "Productivity"
+              ],
+              "range": [
+                "#5E9B57",
+                "#C99A2E",
+                "#2F5D34"
+              ]
+            },
+            "legend": null
+          },
+          "tooltip": [
+            {
+              "field": "industry",
+              "title": "Industry"
+            },
+            {
+              "field": "explain",
+              "title": "Step"
+            }
+          ]
+        }
+      },
+      {
+        "description": "Value labels: above bars that go up, below bars that go down.",
+        "transform": [
+          {
+            "filter": "datum.end >= datum.start"
+          }
+        ],
+        "mark": {
+          "type": "text",
+          "baseline": "bottom",
+          "dy": -3,
+          "fontSize": 10,
+          "color": "#333"
+        },
+        "encoding": {
+          "y": {
+            "field": "label_y",
+            "type": "quantitative"
+          },
+          "text": {
+            "field": "label_text"
+          }
+        }
+      },
+      {
+        "transform": [
+          {
+            "filter": "datum.end < datum.start"
+          }
+        ],
+        "mark": {
+          "type": "text",
+          "baseline": "top",
+          "dy": 3,
+          "fontSize": 10,
+          "color": "#333"
+        },
+        "encoding": {
+          "y": {
+            "field": "label_y",
+            "type": "quantitative"
+          },
+          "text": {
+            "field": "label_text"
+          }
+        }
+      }
+    ]
+  },
+  "autosize": {
+    "type": "pad"
+  }
+}

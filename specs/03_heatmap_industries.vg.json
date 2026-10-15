@@ -1,0 +1,108 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "CHART 3 - Heatmap. Rows = industries, columns = years, colour = productivity index (ABARES tables 2-6 for broadacre industries and table 16 for dairy, All Australia). Diverging colour: brown = below the starting level of 100, cream = no change, green = above. Rows are sorted by their 2024-25 value. Dairy starts in 1978-79 (its own base year), so its first cell is empty.",
+  "width": "container",
+  "height": 230,
+  "data": {
+    "url": "data/industry_index.csv",
+    "format": {
+      "type": "csv",
+      "parse": {
+        "year": "number",
+        "index": "number"
+      }
+    }
+  },
+  "transform": [
+    {
+      "filter": "isValid(datum.index)"
+    }
+  ],
+  "mark": {
+    "type": "rect",
+    "stroke": "#FBF8F1",
+    "strokeWidth": 0.6
+  },
+  "encoding": {
+    "x": {
+      "field": "year",
+      "type": "ordinal",
+      "axis": {
+        "title": null,
+        "labelAngle": 0,
+        "labelExpr": "datum.value % 10 === 0 ? datum.value : ''",
+        "ticks": false,
+        "domain": false
+      }
+    },
+    "y": {
+      "field": "industry",
+      "type": "nominal",
+      "sort": [
+        "Cropping",
+        "Dairy",
+        "Mixed crop-livestock",
+        "Sheep-beef",
+        "Beef",
+        "Sheep"
+      ],
+      "axis": {
+        "title": null,
+        "ticks": false,
+        "domain": false,
+        "labelFontSize": 12,
+        "labelPadding": 6
+      }
+    },
+    "color": {
+      "field": "index",
+      "type": "quantitative",
+      "scale": {
+        "domain": [
+          60,
+          100,
+          160,
+          300
+        ],
+        "range": [
+          "#8C5A2B",
+          "#F3EEDF",
+          "#7FAE6E",
+          "#1F4D2B"
+        ],
+        "interpolate": "hcl"
+      },
+      "legend": {
+        "title": "Productivity index (start year = 100)",
+        "orient": "top",
+        "direction": "horizontal",
+        "gradientLength": 260,
+        "values": [
+          60,
+          100,
+          150,
+          200,
+          250,
+          300
+        ],
+        "titleLimit": 400,
+        "titleOrient": "left"
+      }
+    },
+    "tooltip": [
+      {
+        "field": "industry",
+        "title": "Industry"
+      },
+      {
+        "field": "fy",
+        "title": "Financial year"
+      },
+      {
+        "field": "index",
+        "title": "Index",
+        "format": ".1f"
+      }
+    ]
+  }
+}

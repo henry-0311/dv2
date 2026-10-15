@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Doing more with less: Australian farm productivity, 1977–2025</title>
+  <meta name="description" content="How Australian farms became more productive, which industries and states gained most, and what it means for Malaysia.">
+  <meta name="author" content="Chin Heng Li">
+
+  <!-- Fonts: Zilla Slab (headings) and Source Sans 3 (text and charts), Google Fonts, SIL Open Font Licence -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Zilla+Slab:wght@600;700&display=swap" rel="stylesheet">
+
+  <!-- Vega, Vega-Lite and Vega-Embed: pinned versions so the page always draws the same way -->
+  <script src="https://cdn.jsdelivr.net/npm/vega@5.30.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.23.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.26.0"></script>
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ===================== HERO: title, lead and the pictogram (chart 1) ===================== -->
+<header class="hero">
+  <div class="wrap">
+    <h1>Doing more with less</h1>
+    <p class="lead">Australian farms now produce almost twice as much from the same land, labour,
+      machinery and materials as they did in the late 1970s. Here is which farms got there, how,
+      and where, and why it matters for the food Malaysia buys from Australia.</p>
+
+    <figure>
+      <div id="vis-pictogram" class="vis"></div>
+      <figcaption>Farm output from the same bundle of inputs. Each sack is 10 points of the ABARES
+        productivity index for broadacre farms (1977–⁠78 = 100). The 2024–⁠25 value of 188.7 is
+        rounded to 19 sacks.</figcaption>
+    </figure>
+
+  </div>
+</header>
+
+<main>
+
+<!-- ===================== SECTION 1: what productivity is + national line chart (chart 2) ===================== -->
+<section class="section">
+  <div class="wrap">
+    <h2><span class="num">1</span>What is farm productivity?</h2>
+    <div class="row">
+      <div>
+        <p>Productivity compares what farms produce (grain, meat, wool and milk) with what they use
+          to produce it: land, labour, machinery, and materials such as fuel and fertiliser. When
+          output grows faster than inputs, farms are becoming more productive.</p>
+        <p>The figures come from ABARES, the Australian Government's farm research bureau. It tracks
+          <em>broadacre</em> farms, the large farms that grow grain or graze sheep and cattle over wide
+          areas, and dairy farms. Each figure is an <em>index</em>: the starting year equals 100, so
+          150 means one and a half times as much output from the same inputs.</p>
+      </div>
+      <div>
+        <div class="stats">
+          <div class="stat"><b>1.0%</b><span>average growth a year since 1977–⁠78, all broadacre farms</span></div>
+          <div class="stat"><b>191</b><span>the highest point so far, in 2016–⁠17</span></div>
+        </div>
+        <p>The climb was not smooth. In a harsh, dry season crops fail and animals need extra feed,
+          so output drops while most costs stay the same. The
+          <span class="key harsh">red dots</span> mark the four seasons where ABARES's own weather
+          adjustment (section 5) shows the biggest hit since 1988–⁠89.</p>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Broadacre productivity, all of Australia</h3>
+      <p class="sub">Index, 1977–⁠78 = 100. The vertical axis starts at 80 so year-to-year changes are visible. Hover over the line to see any year.</p>
+      <div id="vis-line" class="vis"></div>
+      <p class="source">Source: ABARES (2026), Australian Agricultural Productivity 2024–⁠25, table 1. Harsh seasons: the four years with the lowest ratio of the actual index to ABARES's climate-adjusted index (table c1), calculated by the author.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SECTION 2: industries heatmap (chart 3) ===================== -->
+<section class="section">
+  <div class="wrap">
+    <h2><span class="num">2</span>Which industries pulled ahead?</h2>
+    <div class="row">
+      <div>
+        <p>Not every farm improved at the same pace. Cropping farms, which grow wheat, barley and
+          canola, now get 2.8 times as much from the same inputs as in 1977–⁠78. Sheep farms ended
+          2024–⁠25 at 101, almost exactly where they started.</p>
+      </div>
+      <div>
+        <div class="stats">
+          <div class="stat"><b>2.8×</b><span>cropping farms in 2024–⁠25 compared with 1977–⁠78</span></div>
+          <div class="stat"><b>1.0×</b><span>sheep farms: back at their starting level</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Productivity index by industry, every year since 1977–⁠78</h3>
+      <p class="sub">Each row is one industry and each square one year. Brown is below the starting
+        level, cream is no change, green is above it. Dry years often show as pale stripes running
+        down several rows at once. Dairy is measured from 1978–⁠79.</p>
+      <div id="vis-heatmap" class="vis"></div>
+      <p class="source">Source: ABARES (2026), Australian Agricultural Productivity 2024–⁠25, tables 2–6 (broadacre industries) and 16 (dairy). "Mixed" farms both crop and graze.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SECTION 3: waterfall (chart 4) + input types (chart 5) ===================== -->
+<section class="section">
+  <div class="wrap">
+    <h2><span class="num">3</span>Where does the growth come from?</h2>
+    <div class="row">
+      <div>
+        <p>There are two ways to raise productivity: produce more, or use less. Cropping farms did
+          the first. Their output grew 2.9% a year, faster than their inputs (1.4% a year).</p>
+      </div>
+      <div>
+        <p>Sheep farms did the second. They produced less each year
+          (−1.9%), but cut their inputs even faster (−2.3%), so they still gained 0.4% a year.
+          Mixed farms followed the same path as sheep farms.</p>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>From output to productivity: average change per year, 1977–⁠78 to 2024–⁠25</h3>
+      <p class="sub">Read each panel from left to right. <span class="key output">Output</span>: how
+        fast output grew. <span class="key inputs">Inputs</span>: the effect of inputs. Using more
+        inputs pulls productivity down and using fewer pushes it up, so this bar is input growth with
+        the sign flipped. <span class="key result">Result</span>: productivity growth.</p>
+      <div id="vis-waterfall" class="vis"></div>
+      <p class="source">Source: ABARES (2026), tables 7 (productivity), 8 (inputs) and 9 (output), all of Australia. The result can differ from the first two steps by 0.1 because ABARES rounds each rate separately.</p>
+    </div>
+
+    <div class="row">
+      <p>Across all broadacre farms, labour fell 2.0% a year and capital 1.2%, while
+        materials such as fuel, fertiliser and chemicals rose 1.8% a year. In short, farms
+        replaced workers with purchased materials.</p>
+      <p>Cropping is the exception that explains its lead: it used more of almost everything,
+        especially materials (+4.0% a year) and land (+1.1%), and turned them into far more grain.</p>
+    </div>
+
+    <div class="panel">
+      <h3>Which inputs changed?</h3>
+      <p class="sub">Average change per year in each type of input, 1977–⁠78 to 2024–⁠25. Bars right of 0: farms used more of that input. Bars left of 0: they used less.</p>
+      <div id="vis-inputs" class="vis"></div>
+      <p class="source">Source: ABARES (2026), table 10.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SECTION 4: maps (charts 6, 7) + bump chart (chart 8) ===================== -->
+<section class="section">
+  <div class="wrap">
+    <h2><span class="num">4</span>Where in Australia?</h2>
+    <div class="row">
+      <div>
+        <p>Productivity grew in every state. The Northern Territory (1.5% a year) and Western
+          Australia (1.4%) grew fastest, and Tasmania was slowest (0.4%).</p>
+        <p>Use the drop-down above the map to compare industries. Sheep farms in Western Australia,
+          for example, grew 2.6% a year, while those in New South Wales went backwards (−0.4%).</p>
+      </div>
+      <div>
+        <div class="stats">
+          <div class="stat"><b>2.4×</b><span>Western Australian farms in 2024–⁠25 compared with 1977–⁠78</span></div>
+          <div class="stat"><b>1.5%</b><span>a year in the Northern Territory, the fastest growth</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="panel">
+        <h3>Productivity growth per year, by state</h3>
+        <p class="sub">1977–⁠78 to 2024–⁠25. Darker green is faster growth; brown is decline. n/r: not reported by ABARES (too few farms surveyed).</p>
+        <div id="industry-control"></div>
+        <div id="vis-choropleth" class="vis"></div>
+        <!-- State legend: what each abbreviation on the map stands for. -->
+        <dl class="state-key">
+          <dt>WA</dt><dd>Western Australia</dd>
+          <dt>NT</dt><dd>Northern Territory</dd>
+          <dt>SA</dt><dd>South Australia</dd>
+          <dt>Qld</dt><dd>Queensland</dd>
+          <dt>NSW</dt><dd>New South Wales</dd>
+          <dt>Vic</dt><dd>Victoria</dd>
+          <dt>Tas</dt><dd>Tasmania</dd>
+        </dl>
+        <p class="source">Source: ABARES (2026), tables 7 and 17. Boundaries: ABARES AAGIS regions, merged into states by the author.</p>
+      </div>
+      <div class="panel">
+        <h3>Two roads to efficiency</h3>
+        <p class="sub">Change per year in <span class="key output">output</span> and
+          <span class="key inputs">inputs</span>, all broadacre farms, 1977–⁠78 to 2024–⁠25.
+          Bars above the line are increases, bars below are decreases.</p>
+        <div id="vis-barmap" class="vis"></div>
+        <!-- State legend: what each abbreviation on the map stands for. -->
+        <dl class="state-key">
+          <dt>WA</dt><dd>Western Australia</dd>
+          <dt>NT</dt><dd>Northern Territory</dd>
+          <dt>SA</dt><dd>South Australia</dd>
+          <dt>Qld</dt><dd>Queensland</dd>
+          <dt>NSW</dt><dd>New South Wales</dd>
+          <dt>Vic</dt><dd>Victoria</dd>
+          <dt>Tas</dt><dd>Tasmania</dd>
+        </dl>
+        <p class="source">Source: ABARES (2026), tables 8 and 9. Boundaries: ABARES AAGIS regions.</p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <p>States took different roads. The Northern Territory and Western Australia mostly
+          produced more: output rose 1.9% and 1.2% a year. Tasmania went the other way. Its output
+          fell 1.5% a year, but it cut inputs even faster (−1.9%).</p>
+        <h3 style="margin-top: 28px;">Which state has improved most?</h3>
+        <p>Every state starts at 100, so a rank here shows growth since 1977–⁠78, not which state
+          has the best farms. South Australia led for four decades. Western Australia moved to first
+          in 2020–⁠24.</p>
+        <p>The Northern Territory climbed from 7th to 4th, then slipped to 6th. Its fast growth rate
+          partly reflects a weak start: its index averaged 88 in 1977–⁠89, below its starting level.</p>
+      </div>
+      <div class="panel">
+        <h3>Rank by average productivity index</h3>
+        <p class="sub">1 = most growth since 1977–⁠78. <span class="key wa">Western Australia</span>, <span class="key sa">South Australia</span> and the <span class="key nt">Northern Territory</span> keep the same colours in the weather chart below. Hover a line to highlight a state.</p>
+        <div id="vis-bump" class="vis"></div>
+        <p class="source">Source: ABARES (2026), table 1. Period averages and ranks calculated by the author.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SECTION 5: weather removed (charts 9, 10) ===================== -->
+<section class="section">
+  <div class="wrap">
+    <h2><span class="num">5</span>Take the weather out</h2>
+    <!-- Text first (two equal columns), then the two charts side by side, so no chart sits next to empty space. -->
+    <div class="row">
+      <div>
+        <p>Australia's weather swings widely, so one good or bad season can hide the real trend.
+          ABARES also estimates productivity with the effects of weather and climate removed, using
+          a machine-learning model. Its estimates start in 1988–⁠89.</p>
+        <p>With the weather taken out, the line is much smoother and the
+          dips in <span class="key harsh">harsh seasons</span> become much smaller. Broadacre productivity
+          still rose about 35% between 1988–⁠89 and 2024–⁠25.</p>
+      </div>
+      <div>
+        <p>By state, Western Australia stands out: +71% with the weather removed. New South Wales
+          and Queensland gained about 15%.</p>
+        <p>The Northern Territory (+5%) and Tasmania (+4%) barely moved. So the Territory's fast
+          growth since 1977–⁠78 seems to owe more to its weak start and good seasons than to steady
+          gains since 1988–⁠89.</p>
+      </div>
+    </div>
+
+    <div class="row charts">
+      <div class="panel">
+        <h3>Actual and weather-removed productivity</h3>
+        <p class="sub"><span class="key result">Actual</span> and <span class="key black">weather removed</span>, all of Australia. Both set to 100 in 1988–⁠89 so their shapes can be compared.</p>
+        <div id="vis-climate" class="vis"></div>
+        <p class="source">Source: ABARES (2026), tables 1 and c1. Rebased to 1988–⁠89 = 100 by the author.</p>
+      </div>
+      <div class="panel">
+        <h3>Change with the weather removed, by state</h3>
+        <p class="sub">Each state set to 100 in 1988–⁠89. Hover a line for ABARES's growth rate.</p>
+        <div id="vis-slope" class="vis"></div>
+        <p class="source">Source: ABARES (2026), tables c1 and c7. Rebased by the author.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SECTION 6: flow map to Malaysia and other markets (chart 11) ===================== -->
+<section class="section">
+  <div class="wrap">
+    <h2><span class="num">6</span>From Australian farms to Malaysian tables</h2>
+    <div class="row">
+      <div>
+        <p>Australia sends over 70% of the value of its farm production overseas, so these gains
+          reach well beyond Australia. In 2023–⁠24 <span class="key malaysia">Malaysia</span> bought
+          A$1.8 billion (1.8 billion Australian dollars) of Australian farm products, making it Australia's 10th-largest farm market.
+          China was the largest, at A$16.2 billion.</p>
+        <p>Every gain in productivity means more grain, meat and milk from the same land and labour,
+          and much of it is shipped to Asia.</p>
+      </div>
+      <div>
+        <div class="stats">
+          <div class="stat navy"><b>A$1.8 bn</b><span>1.8 billion Australian dollars of farm products bought by Malaysia in 2023–⁠24</span></div>
+          <div class="stat"><b>8 of 10</b><span>of Australia's largest farm markets are in Asia</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Australia's ten largest agricultural export markets, 2023–⁠24</h3>
+      <p class="sub">Line width shows the value of exports from Australia, in Australian dollars (A$; bn = billion). <span class="key malaysia">Malaysia</span> is in navy. Lines show who buys, not real shipping routes. Hover a line for details.</p>
+      <div id="vis-flow" class="vis"></div>
+      <p class="source">Source: Department of Foreign Affairs and Trade, <a href="https://www.dfat.gov.au/trade/organisations/wto/agricultural-trade">Agricultural trade</a>, table of major agricultural export markets 2023–⁠24 (DFAT's source: ABARES Agricultural Commodities, September quarter 2025). Countries: Natural Earth (public domain).</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ===================== CLOSING: takeaways, sources, metadata ===================== -->
+<section class="closing">
+  <div class="wrap">
+    <h2>What to remember</h2>
+    <div class="takeaways">
+      <div>
+        <h3>Almost twice as much</h3>
+        <p>Broadacre farms now produce 1.9 times as much from the same inputs as in 1977–⁠78,
+          even though harsh seasons still knock them back.</p>
+      </div>
+      <div>
+        <h3>Cropping led, sheep stalled</h3>
+        <p>Cropping farms are 2.8 times as productive as in 1977–⁠78. Sheep farms are back where
+          they started.</p>
+      </div>
+      <div>
+        <h3>Fewer workers, more materials</h3>
+        <p>Labour use fell 2.0% a year while materials such as fuel and fertiliser rose 1.8% a year.</p>
+      </div>
+    </div>
+
+    <h3>Sources</h3>
+    <ul class="sources">
+      <li>ABARES 2026, <em>Australian Agricultural Productivity, 2024–⁠25 data dashboard</em>, Australian Bureau of Agricultural and Resource Economics and Sciences, Canberra, June. CC BY 4.0. <a href="https://doi.org/10.25814/wred-1813">https://doi.org/10.25814/wred-1813</a></li>
+      <li>ABARES, Australian Agricultural and Grazing Industries Survey (AAGIS) regions, ASGS 2016 boundaries (file aagis_asgs16v1_g5a), merged into states and simplified by the author.</li>
+      <li>Department of Foreign Affairs and Trade, <em>Agricultural trade</em>, <a href="https://www.dfat.gov.au/trade/organisations/wto/agricultural-trade">dfat.gov.au</a>, accessed 15 October 2026.</li>
+      <li>Natural Earth, Admin 0 countries, 1:110m. Public domain. <a href="https://www.naturalearthdata.com">naturalearthdata.com</a></li>
+    </ul>
+
+    <!-- Authorship and date (required by the brief): the last line of the page. -->
+    <footer>
+      <p>By Chin Heng Li (student ID 34598057). FIT3179 Data Visualisation 2, Monash University Malaysia. Published October 2026.</p>
+    </footer>
+  </div>
+</section>
+
+<script src="js/main.js"></script>
+</body>
+</html>

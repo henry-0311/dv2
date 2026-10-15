@@ -1,0 +1,179 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "CHART 8 - Bump chart. States ranked by their average productivity index in each period (ABARES table 1, All industries; averages and ranks calculated in prepare_data.py). IMPORTANT: every state's index starts at 100 in 1977-78, so rank 1 = the state that has improved the MOST since 1977-78, not the state with the most productive farms. South Australia, Western Australia and the Northern Territory are coloured because the text discusses them; hover any line to highlight it.",
+  "width": "container",
+  "height": 290,
+  "data": {
+    "url": "data/state_ranks.csv",
+    "format": {
+      "type": "csv",
+      "parse": {
+        "avg_index": "number",
+        "rank": "number"
+      }
+    }
+  },
+  "transform": [
+    {
+      "calculate": "indexof(['SA', 'WA', 'NT'], datum.abbr) >= 0 ? datum.abbr : 'Other'",
+      "as": "group"
+    }
+  ],
+  "encoding": {
+    "x": {
+      "field": "period",
+      "type": "ordinal",
+      "sort": [
+        "1977–89",
+        "1990s",
+        "2000s",
+        "2010s",
+        "2020–24"
+      ],
+      "scale": {
+        "padding": 0.3
+      },
+      "axis": {
+        "title": null,
+        "orient": "top",
+        "labelAngle": 0,
+        "labelFontSize": 12,
+        "labelFontWeight": "bold",
+        "ticks": false,
+        "domain": false
+      }
+    },
+    "y": {
+      "field": "rank",
+      "type": "quantitative",
+      "scale": {
+        "domain": [
+          0.6,
+          7.4
+        ],
+        "reverse": true
+      },
+      "axis": null
+    },
+    "color": {
+      "field": "group",
+      "type": "nominal",
+      "scale": {
+        "domain": [
+          "SA",
+          "WA",
+          "NT",
+          "Other"
+        ],
+        "range": [
+          "#B0417F",
+          "#1F7A6B",
+          "#4A90C2",
+          "#B9B6AC"
+        ]
+      },
+      "legend": null
+    },
+    "opacity": {
+      "condition": {
+        "param": "hover",
+        "empty": true,
+        "value": 1
+      },
+      "value": 0.25
+    },
+    "tooltip": [
+      {
+        "field": "state",
+        "title": "State"
+      },
+      {
+        "field": "period",
+        "title": "Period"
+      },
+      {
+        "field": "rank",
+        "title": "Rank"
+      },
+      {
+        "field": "avg_index",
+        "title": "Average index",
+        "format": ".1f"
+      }
+    ]
+  },
+  "layer": [
+    {
+      "mark": {
+        "type": "line",
+        "interpolate": "linear",
+        "strokeWidth": 3
+      },
+      "encoding": {
+        "detail": {
+          "field": "state"
+        }
+      }
+    },
+    {
+      "mark": {
+        "type": "circle",
+        "size": 330,
+        "opacity": 1
+      },
+      "params": [
+        {
+          "name": "hover",
+          "select": {
+            "type": "point",
+            "fields": [
+              "state"
+            ],
+            "on": "mouseover",
+            "clear": "mouseout"
+          }
+        }
+      ],
+      "description": "Circles carry the hover selection (one selection for the whole chart)."
+    },
+    {
+      "mark": {
+        "type": "text",
+        "color": "#FFFFFF",
+        "fontSize": 11,
+        "fontWeight": "bold"
+      },
+      "encoding": {
+        "text": {
+          "field": "rank"
+        },
+        "color": {
+          "value": "#FFFFFF"
+        }
+      }
+    },
+    {
+      "description": "State names at the right-hand end of each line.",
+      "transform": [
+        {
+          "filter": "datum.period === '2020–24'"
+        }
+      ],
+      "mark": {
+        "type": "text",
+        "align": "left",
+        "dx": 16,
+        "fontSize": 12
+      },
+      "encoding": {
+        "text": {
+          "field": "state"
+        },
+        "color": {
+          "field": "group",
+          "type": "nominal"
+        }
+      }
+    }
+  ]
+}

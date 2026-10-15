@@ -1,0 +1,218 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "CHART 2 - Line chart of the broadacre productivity index for All Australia, 1977-78 to 2024-25 (ABARES table 1). Red dots mark the four harsh seasons: the years where ABARES's actual index is lowest compared with its climate-adjusted index (calculated in prepare_data.py). Hovering shows the value for any year.",
+  "width": "container",
+  "height": 300,
+  "data": {
+    "url": "data/national_index.csv",
+    "format": {
+      "type": "csv",
+      "parse": {
+        "year": "number",
+        "index": "number",
+        "actual_rebased": "number",
+        "adjusted_rebased": "number",
+        "adjusted_raw": "number"
+      }
+    }
+  },
+  "encoding": {
+    "x": {
+      "field": "year",
+      "type": "quantitative",
+      "scale": {
+        "domain": [
+          1977,
+          2024
+        ]
+      },
+      "axis": {
+        "title": "Financial year (starting)",
+        "format": "d",
+        "tickCount": 10,
+        "grid": false
+      }
+    },
+    "y": {
+      "field": "index",
+      "type": "quantitative",
+      "scale": {
+        "domain": [
+          80,
+          200
+        ],
+        "nice": false
+      },
+      "axis": {
+        "title": "Productivity index",
+        "values": [
+          80,
+          100,
+          120,
+          140,
+          160,
+          180,
+          200
+        ]
+      }
+    }
+  },
+  "layer": [
+    {
+      "description": "Dashed reference line at 100 = the 1977-78 starting level.",
+      "mark": {
+        "type": "rule",
+        "strokeDash": [
+          4,
+          4
+        ],
+        "color": "#9A9A8E"
+      },
+      "encoding": {
+        "x": null,
+        "y": {
+          "datum": 100
+        }
+      }
+    },
+    {
+      "mark": {
+        "type": "text",
+        "align": "left",
+        "dy": 13,
+        "fontSize": 11,
+        "color": "#6B6B60"
+      },
+      "encoding": {
+        "x": {
+          "datum": 2012
+        },
+        "y": {
+          "datum": 100
+        },
+        "text": {
+          "value": "1977–78 = 100"
+        }
+      },
+      "data": {
+        "values": [
+          {}
+        ]
+      }
+    },
+    {
+      "description": "The main productivity line.",
+      "mark": {
+        "type": "line",
+        "color": "#2F5D34",
+        "strokeWidth": 2.4
+      },
+      "encoding": {}
+    },
+    {
+      "description": "Red dots and labels for the four harshest seasons.",
+      "transform": [
+        {
+          "filter": "indexof(['1994–95', '2002–03', '2006–07', '2019–20'], datum.fy) >= 0"
+        }
+      ],
+      "layer": [
+        {
+          "mark": {
+            "type": "circle",
+            "size": 70,
+            "color": "#9E2A2B",
+            "opacity": 1
+          },
+          "encoding": {}
+        },
+        {
+          "mark": {
+            "type": "text",
+            "dy": 15,
+            "fontSize": 11,
+            "color": "#9E2A2B",
+            "fontWeight": "bold"
+          },
+          "encoding": {
+            "text": {
+              "field": "fy"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "description": "Label for the latest value.",
+      "transform": [
+        {
+          "filter": "datum.fy === '2024–25'"
+        }
+      ],
+      "mark": {
+        "type": "text",
+        "align": "right",
+        "dx": -6,
+        "dy": -12,
+        "fontSize": 12,
+        "fontWeight": "bold",
+        "color": "#2F5D34"
+      },
+      "encoding": {
+        "text": {
+          "value": "188.7 in 2024–25"
+        }
+      }
+    },
+    {
+      "description": "Hover helper: an invisible point per year finds the year nearest the mouse; a thin rule and a tooltip then show that year.",
+      "params": [
+        {
+          "name": "hover",
+          "select": {
+            "type": "point",
+            "fields": [
+              "year"
+            ],
+            "nearest": true,
+            "on": "mouseover",
+            "clear": "mouseout"
+          }
+        }
+      ],
+      "mark": {
+        "type": "point",
+        "opacity": 0,
+        "size": 60
+      },
+      "encoding": {
+        "tooltip": [
+          {
+            "field": "fy",
+            "title": "Financial year"
+          },
+          {
+            "field": "index",
+            "title": "Productivity index",
+            "format": ".1f"
+          }
+        ]
+      }
+    },
+    {
+      "transform": [
+        {
+          "filter": {
+            "param": "hover",
+            "empty": false
+          }
+        }
+      ],
+      "mark": {
+        "type": "rule",
+        "color": "#2F5D34",
+        "opacity": 0.35
+      }
+    }
+  ]
+}

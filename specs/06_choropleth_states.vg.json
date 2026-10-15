@@ -1,0 +1,219 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "CHART 6 - Choropleth map (map idiom 1). Each state is coloured by its average productivity growth, % a year, 1977-78 to 2024-25 (ABARES table 7; dairy from table 17, which starts in 1978-79). Growth is already a rate, so no extra standardising is needed. Colours are classed into 6 steps (below 0 is brown; 0-0.5, 0.5-1, 1-1.5, 1.5-2 and 2+ are greens, darker = faster growth). The drop-down (placed above the map by main.js/index.html) changes the industry. Grey = ABARES did not report the value (too few farms surveyed). Projection: Albers conic equal-area with standard parallels 18 S and 36 S, the usual choice for maps of Australia. Boundaries: ABARES AAGIS regions merged into states.",
+  "width": "container",
+  "height": 380,
+  "projection": {
+    "type": "conicEqualArea",
+    "parallels": [
+      -18,
+      -36
+    ],
+    "rotate": [
+      -132,
+      0,
+      0
+    ],
+    "center": [
+      0,
+      -27
+    ]
+  },
+  "params": [
+    {
+      "name": "industry",
+      "value": "All broadacre",
+      "bind": {
+        "input": "select",
+        "name": "Industry: ",
+        "options": [
+          "All broadacre",
+          "Cropping",
+          "Mixed crop-livestock",
+          "Beef",
+          "Sheep-beef",
+          "Sheep",
+          "Dairy"
+        ],
+        "element": "#industry-control"
+      }
+    }
+  ],
+  "layer": [
+    {
+      "description": "Grey base layer so states without data still show their outline.",
+      "data": {
+        "url": "data/aus_states.topojson",
+        "format": {
+          "type": "topojson",
+          "feature": "states"
+        }
+      },
+      "mark": {
+        "type": "geoshape",
+        "fill": "#DAD6CB",
+        "stroke": "#FBF8F1",
+        "strokeWidth": 1
+      }
+    },
+    {
+      "description": "Coloured states. The growth rows are filtered to the chosen industry, then each row looks up its state outline from the TopoJSON.",
+      "data": {
+        "url": "data/state_growth.csv",
+        "format": {
+          "type": "csv",
+          "parse": {
+            "growth": "number"
+          }
+        }
+      },
+      "transform": [
+        {
+          "filter": "datum.industry === industry && isValid(datum.growth) && datum.growth !== ''"
+        },
+        {
+          "lookup": "state",
+          "from": {
+            "data": {
+              "url": "data/aus_states.topojson",
+              "format": {
+                "type": "topojson",
+                "feature": "states"
+              }
+            },
+            "key": "properties.state"
+          },
+          "as": "geo"
+        }
+      ],
+      "mark": {
+        "type": "geoshape",
+        "stroke": "#FBF8F1",
+        "strokeWidth": 1
+      },
+      "encoding": {
+        "shape": {
+          "field": "geo",
+          "type": "geojson"
+        },
+        "color": {
+          "field": "growth",
+          "type": "quantitative",
+          "scale": {
+            "type": "threshold",
+            "domain": [
+              0,
+              0.5,
+              1,
+              1.5,
+              2
+            ],
+            "range": [
+              "#B07A45",
+              "#E3EBD3",
+              "#B9D3A2",
+              "#86B375",
+              "#4F8A48",
+              "#1F4D2B"
+            ]
+          },
+          "legend": {
+            "title": "Productivity growth (% a year)",
+            "orient": "bottom",
+            "direction": "horizontal",
+            "titleLimit": 400,
+            "labelExpr": "datum.label",
+            "symbolType": "square",
+            "symbolSize": 160,
+            "columns": 6,
+            "columnPadding": 4
+          }
+        },
+        "tooltip": [
+          {
+            "field": "state",
+            "title": "State"
+          },
+          {
+            "field": "industry",
+            "title": "Industry"
+          },
+          {
+            "field": "growth",
+            "title": "Growth (% a year)",
+            "format": "+.1f"
+          }
+        ]
+      }
+    },
+    {
+      "description": "State labels (abbreviation + value). Label positions come from the lon/lat columns in state_output_input.csv.",
+      "data": {
+        "url": "data/state_growth.csv",
+        "format": {
+          "type": "csv",
+          "parse": {
+            "growth": "number"
+          }
+        }
+      },
+      "transform": [
+        {
+          "filter": "datum.industry === industry"
+        },
+        {
+          "lookup": "state",
+          "from": {
+            "data": {
+              "url": "data/state_output_input.csv",
+              "format": {
+                "type": "csv",
+                "parse": {
+                  "lon": "number",
+                  "lat": "number",
+                  "output_growth": "number",
+                  "input_growth": "number",
+                  "productivity_growth": "number"
+                }
+              }
+            },
+            "key": "state",
+            "fields": [
+              "lon",
+              "lat"
+            ]
+          }
+        },
+        {
+          "calculate": "isValid(datum.growth) && datum.growth !== '' ? datum.abbr + ' ' + format(datum.growth, '+.1f') + '%' : datum.abbr + ' n/r'",
+          "as": "label"
+        }
+      ],
+      "mark": {
+        "type": "text",
+        "fontSize": 12,
+        "fontWeight": "bold"
+      },
+      "encoding": {
+        "longitude": {
+          "field": "lon",
+          "type": "quantitative"
+        },
+        "latitude": {
+          "field": "lat",
+          "type": "quantitative"
+        },
+        "text": {
+          "field": "label"
+        },
+        "color": {
+          "condition": {
+            "test": "datum.growth >= 1.5",
+            "value": "#FFFFFF"
+          },
+          "value": "#1E1E1E"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,133 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "CHART 5 - Diverging bar small multiples. Average yearly growth of each type of input, 1977-78 to 2024-25 (ABARES table 10). Bars right of 0 = farms used more of that input; left of 0 = used less. All bars are mustard, the page's colour for inputs; direction is shown by position, so a second colour (and a legend) is not needed.",
+  "data": {
+    "url": "data/input_types.csv",
+    "format": {
+      "type": "csv",
+      "parse": {
+        "growth": "number"
+      }
+    }
+  },
+  "transform": [
+    {
+      "calculate": "datum.growth > 0 ? 'Used more' : 'Used less'",
+      "as": "direction"
+    }
+  ],
+  "facet": {
+    "column": {
+      "field": "industry",
+      "type": "nominal",
+      "sort": [
+        "All broadacre",
+        "Cropping",
+        "Mixed crop-livestock",
+        "Beef",
+        "Sheep-beef",
+        "Sheep"
+      ],
+      "header": {
+        "title": null,
+        "labelFontSize": 13,
+        "labelFontWeight": "bold",
+        "labelAnchor": "start",
+        "labelColor": "#1F3B24",
+        "labelExpr": "datum.value === 'Mixed crop-livestock' ? 'Mixed' : datum.value"
+      }
+    }
+  },
+  "spacing": 14,
+  "spec": {
+    "width": 140,
+    "height": 140,
+    "encoding": {
+      "y": {
+        "field": "input_type",
+        "type": "nominal",
+        "sort": [
+          "Labour",
+          "Land",
+          "Capital",
+          "Services",
+          "Materials"
+        ],
+        "axis": {
+          "title": null,
+          "ticks": false,
+          "domain": false,
+          "labelFontSize": 11
+        }
+      }
+    },
+    "layer": [
+      {
+        "mark": {
+          "type": "rule",
+          "color": "#9A9A8E"
+        },
+        "encoding": {
+          "y": null,
+          "x": {
+            "datum": 0
+          }
+        }
+      },
+      {
+        "mark": {
+          "type": "bar",
+          "height": {
+            "band": 0.7
+          },
+          "color": "#C99A2E"
+        },
+        "encoding": {
+          "x": {
+            "field": "growth",
+            "type": "quantitative",
+            "scale": {
+              "domain": [
+                -4,
+                4
+              ]
+            },
+            "axis": {
+              "title": "% a year",
+              "values": [
+                -4,
+                -2,
+                0,
+                2,
+                4
+              ],
+              "grid": true
+            }
+          },
+          "tooltip": [
+            {
+              "field": "industry",
+              "title": "Industry"
+            },
+            {
+              "field": "input_type",
+              "title": "Input"
+            },
+            {
+              "field": "direction",
+              "title": "Change"
+            },
+            {
+              "field": "growth",
+              "title": "Growth (% a year)",
+              "format": "+.1f"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "autosize": {
+    "type": "pad"
+  }
+}

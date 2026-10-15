@@ -1,0 +1,178 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "CHART 9 - Two-line chart. Actual broadacre productivity (ABARES table 1) and ABARES's climate-adjusted productivity (table c1), All Australia, 1988-89 to 2024-25. ABARES publishes the two on different scales (the climate-adjusted index is not 100 in its first year), so both are rebased here to 1988-89 = 100 (prepare_data.py) to compare their shapes. Red dots = the four harsh seasons also marked in chart 2. The coloured words 'Actual' and 'weather removed' in the subtitle act as the colour key, so the plot can use the full panel width.",
+  "width": "container",
+  "height": 300,
+  "data": {
+    "url": "data/national_index.csv",
+    "format": {
+      "type": "csv",
+      "parse": {
+        "year": "number",
+        "index": "number",
+        "actual_rebased": "number",
+        "adjusted_rebased": "number",
+        "adjusted_raw": "number"
+      }
+    }
+  },
+  "transform": [
+    {
+      "filter": "datum.year >= 1988"
+    },
+    {
+      "fold": [
+        "actual_rebased",
+        "adjusted_rebased"
+      ],
+      "as": [
+        "series",
+        "value"
+      ]
+    },
+    {
+      "calculate": "datum.series === 'actual_rebased' ? 'Actual' : 'Weather removed'",
+      "as": "series_label"
+    }
+  ],
+  "encoding": {
+    "x": {
+      "field": "year",
+      "type": "quantitative",
+      "scale": {
+        "domain": [
+          1988,
+          2024
+        ]
+      },
+      "axis": {
+        "title": "Financial year (starting)",
+        "format": "d",
+        "grid": false,
+        "values": [
+          1990,
+          2000,
+          2010,
+          2020
+        ]
+      }
+    },
+    "y": {
+      "field": "value",
+      "type": "quantitative",
+      "scale": {
+        "domain": [
+          80,
+          160
+        ]
+      },
+      "axis": {
+        "title": "Index (1988–89 = 100)",
+        "tickCount": 5
+      }
+    }
+  },
+  "layer": [
+    {
+      "mark": {
+        "type": "rule",
+        "strokeDash": [
+          4,
+          4
+        ],
+        "color": "#9A9A8E"
+      },
+      "encoding": {
+        "x": null,
+        "y": {
+          "datum": 100
+        }
+      }
+    },
+    {
+      "mark": {
+        "type": "line",
+        "strokeWidth": 2.4
+      },
+      "encoding": {
+        "color": {
+          "field": "series_label",
+          "type": "nominal",
+          "scale": {
+            "domain": [
+              "Actual",
+              "Weather removed"
+            ],
+            "range": [
+              "#2F5D34",
+              "#1E1E1E"
+            ]
+          },
+          "legend": null
+        },
+        "strokeDash": {
+          "field": "series_label",
+          "type": "nominal",
+          "scale": {
+            "domain": [
+              "Actual",
+              "Weather removed"
+            ],
+            "range": [
+              [
+                1,
+                0
+              ],
+              [
+                6,
+                3
+              ]
+            ]
+          },
+          "legend": null
+        },
+        "tooltip": [
+          {
+            "field": "fy",
+            "title": "Financial year"
+          },
+          {
+            "field": "series_label",
+            "title": "Series"
+          },
+          {
+            "field": "value",
+            "title": "Index (1988–89 = 100)",
+            "format": ".1f"
+          }
+        ]
+      }
+    },
+    {
+      "transform": [
+        {
+          "filter": "datum.series === 'actual_rebased' && indexof(['1994–95', '2002–03', '2006–07', '2019–20'], datum.fy) >= 0"
+        }
+      ],
+      "mark": {
+        "type": "circle",
+        "size": 60,
+        "color": "#9E2A2B",
+        "opacity": 1
+      },
+      "encoding": {
+        "tooltip": [
+          {
+            "field": "fy",
+            "title": "Harsh season"
+          },
+          {
+            "field": "value",
+            "title": "Actual (1988–89 = 100)",
+            "format": ".1f"
+          }
+        ]
+      }
+    }
+  ]
+}

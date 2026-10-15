@@ -1,0 +1,8 @@
+state,abbr,lon,lat,output_growth,input_growth,productivity_growth
+New South Wales,NSW,147.0,-32.0,-0.1,-0.9,0.7
+Victoria,Vic,143.0,-37.4,0.4,-0.7,1.2
+Queensland,Qld,145.0,-23.5,0.1,-0.6,0.7
+South Australia,SA,136.0,-31.0,1.0,-0.1,1.2
+Western Australia,WA,120.5,-28.5,1.2,-0.2,1.4
+Tasmania,Tas,148.3,-42.3,-1.5,-1.9,0.4
+Northern Territory,NT,133.5,-20.0,1.9,0.4,1.5

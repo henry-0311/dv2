@@ -1,0 +1,226 @@
+/*
+  style.css
+  Layout, typography and colour for the page.
+  Colours have one meaning each across the page and the charts:
+    --paddock  dark green  = headings, productivity
+    --leaf     mid green   = output
+    --canola   mustard     = inputs
+    --soil     brown       = below the starting level (in the colour scales)
+    --harsh    dark red    = harsh (dry) seasons
+    --navy     navy        = Malaysia
+*/
+
+:root {
+  --paddock: #1F4D2B;
+  --leaf: #5E9B57;
+  --canola: #C99A2E;
+  --soil: #8C5A2B;
+  --harsh: #9E2A2B;
+  --navy: #1F3A93;
+  --paper: #F6F4ED;
+  --panel: #FFFFFF;
+  --line: #E2DDCF;
+  --ink: #1E1E1E;
+  --muted: #5A5A50;
+
+  --display: "Zilla Slab", Rockwell, "Roboto Slab", Georgia, serif;
+  --body: "Source Sans 3", "Source Sans Pro", Arial, sans-serif;
+
+  --page: 1080px;        /* max content width: fits a 13-inch laptop without sideways scrolling */
+  --gap: 32px;           /* the one gap size used between grid columns */
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 17px;
+  line-height: 1.55;           /* comfortable reading for body text */
+}
+
+/* Every section uses the same centred column so all left edges line up (one sight line). */
+.wrap {
+  max-width: var(--page);
+  margin: 0 auto;
+  padding: 0 28px;
+}
+
+/* ---------- Hero ---------- */
+.hero {
+  background: var(--paddock);
+  color: #F3EEDF;
+  padding: 56px 0 40px;
+}
+.hero h1 {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(44px, 6vw, 76px);
+  line-height: 1;
+  margin: 0 0 18px;
+  letter-spacing: -0.5px;
+}
+.hero .lead {
+  max-width: 40em;             /* keeps the line under ~80 characters */
+  font-size: 19px;
+  margin: 0 0 28px;
+  color: #E6E0CC;
+}
+.hero figure { margin: 0; }
+.hero figcaption {
+  font-size: 14px;
+  color: #CFC8B0;
+  max-width: 46em;
+  margin-top: 6px;
+}
+.byline {
+  margin-top: 26px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(243, 238, 223, 0.25);
+  font-size: 14px;
+  color: #CFC8B0;
+}
+
+/* ---------- Story sections ---------- */
+.section {
+  padding: 56px 0 8px;
+}
+.section + .section { border-top: 1px solid var(--line); }
+
+h2 {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 1.15;
+  color: var(--paddock);
+  margin: 0 0 16px;
+}
+h2 .num { color: var(--leaf); margin-right: 10px; }   /* section number: the story is a sequence */
+
+h3 {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 21px;
+  color: var(--paddock);
+  margin: 0 0 6px;
+}
+
+/* About 60-65 characters per line (typography notes: ~60 characters, 7-10 words). */
+p { margin: 0 0 14px; max-width: 33em; }
+
+/* Two-column rows. Both columns have the SAME width (layout notes: all columns need
+   the same width), so every left and right edge sits on the same vertical sight-lines. */
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gap);
+  align-items: start;
+  margin-bottom: 28px;
+}
+
+/* Big-number callouts that sit beside the text. */
+.stats {
+  display: flex;
+  gap: var(--gap);
+  margin: 2px 0 18px;
+}
+.stat { border-left: 3px solid var(--paddock); padding-left: 12px; }
+.stat b {
+  display: block;
+  font-family: var(--display);
+  font-size: 40px;
+  line-height: 1.05;
+  color: var(--paddock);
+}
+.stat span { font-size: 14px; color: var(--muted); display: block; max-width: 13em; }
+.stat.navy { border-color: var(--navy); }
+.stat.navy b { color: var(--navy); }
+
+/* Two charts side by side: panels stretch to the same height and their source lines line up at the bottom. */
+.row.charts { align-items: stretch; }
+.row.charts .panel { display: flex; flex-direction: column; margin-bottom: 0; }
+.row.charts .panel .source { margin-top: auto; padding-top: 10px; }
+
+/* White panels hold the charts (figure) so they stand out from the page (figure-ground). */
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 20px 22px 14px;
+  margin: 0 0 28px;
+}
+.panel h3 { font-size: 18px; }
+.panel .sub { font-size: 14px; color: var(--muted); margin: 0 0 10px; max-width: none; }
+.vis { width: 100%; }               /* Vega-Lite "container" width reads this */
+.source {
+  font-size: 12.5px;
+  color: var(--muted);
+  margin: 10px 0 0;
+  max-width: none;
+}
+.source a { color: var(--muted); }
+
+/* State legend under each map: abbreviation (bold) + full name, in a 3-column grid. */
+.state-key {
+  display: grid;
+  grid-template-columns: repeat(3, auto auto);
+  justify-content: start;
+  column-gap: 6px;
+  row-gap: 2px;
+  font-size: 13px;
+  color: var(--muted);
+  margin: 8px 0 0;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+}
+.state-key dt { font-weight: 700; color: var(--ink); }
+.state-key dd { margin: 0 14px 0 0; }
+
+/* Small colour keys written into the text (e.g. "green = output"). */
+.key { font-weight: 600; white-space: nowrap; }
+.key.output { color: #3D7A3F; }
+.key.inputs { color: #9A7419; }
+.key.result { color: #2F5D34; }
+.key.harsh { color: var(--harsh); }
+.key.malaysia { color: var(--navy); }
+.key.black { color: var(--ink); }
+.key.wa { color: #1F7A6B; }
+.key.sa { color: #B0417F; }
+.key.nt { color: #2F78AD; }
+
+/* The industry drop-down: Vega-Lite builds it inside #industry-control, above the choropleth map. */
+#industry-control { margin: 0 0 6px; }
+.vega-bind { font-size: 14px; }
+.vega-bind-name { font-weight: 600; color: var(--paddock); }
+.vega-bind select {
+  font: inherit;
+  padding: 3px 6px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: #fff;
+}
+.vega-bind select:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
+
+/* ---------- Takeaways, sources, footer ---------- */
+.closing { background: #ECE7D9; padding: 48px 0 40px; margin-top: 40px; }
+.takeaways {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gap);
+  margin-bottom: 36px;
+}
+.takeaways div { border-top: 3px solid var(--paddock); padding-top: 10px; }
+.takeaways p { font-size: 15.5px; }
+.sources { font-size: 14px; padding-left: 18px; margin: 0 0 24px; }
+.sources li { margin-bottom: 6px; }
+.sources a { color: var(--paddock); }
+footer { font-size: 14px; color: var(--muted); border-top: 1px solid #D6CFBD; padding-top: 14px; }
+footer p { max-width: none; }
+
+/* ---------- Smaller screens: stack the columns ---------- */
+@media (max-width: 820px) {
+  .row, .takeaways { grid-template-columns: 1fr; }
+  .stats { flex-wrap: wrap; }
+}

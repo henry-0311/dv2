@@ -1,0 +1,50 @@
+industry,state,abbr,growth
+All broadacre,New South Wales,NSW,0.7
+All broadacre,Victoria,Vic,1.2
+All broadacre,Queensland,Qld,0.7
+All broadacre,South Australia,SA,1.2
+All broadacre,Western Australia,WA,1.4
+All broadacre,Tasmania,Tas,0.4
+All broadacre,Northern Territory,NT,1.5
+Cropping,New South Wales,NSW,1.3
+Cropping,Victoria,Vic,1.9
+Cropping,Queensland,Qld,1.2
+Cropping,South Australia,SA,2.0
+Cropping,Western Australia,WA,1.5
+Cropping,Tasmania,Tas,
+Cropping,Northern Territory,NT,
+Mixed crop-livestock,New South Wales,NSW,0.7
+Mixed crop-livestock,Victoria,Vic,1.3
+Mixed crop-livestock,Queensland,Qld,0.9
+Mixed crop-livestock,South Australia,SA,0.7
+Mixed crop-livestock,Western Australia,WA,1.0
+Mixed crop-livestock,Tasmania,Tas,
+Mixed crop-livestock,Northern Territory,NT,
+Beef,New South Wales,NSW,0.3
+Beef,Victoria,Vic,0.6
+Beef,Queensland,Qld,0.6
+Beef,South Australia,SA,0.6
+Beef,Western Australia,WA,0.4
+Beef,Tasmania,Tas,0.8
+Beef,Northern Territory,NT,1.5
+Sheep-beef,New South Wales,NSW,-0.2
+Sheep-beef,Victoria,Vic,0.6
+Sheep-beef,Queensland,Qld,0.0
+Sheep-beef,South Australia,SA,0.4
+Sheep-beef,Western Australia,WA,2.9
+Sheep-beef,Tasmania,Tas,0.3
+Sheep-beef,Northern Territory,NT,
+Sheep,New South Wales,NSW,-0.4
+Sheep,Victoria,Vic,0.1
+Sheep,Queensland,Qld,0.4
+Sheep,South Australia,SA,0.3
+Sheep,Western Australia,WA,2.6
+Sheep,Tasmania,Tas,0.0
+Sheep,Northern Territory,NT,
+Dairy,New South Wales,NSW,1.2
+Dairy,Victoria,Vic,0.8
+Dairy,Queensland,Qld,1.0
+Dairy,South Australia,SA,1.3
+Dairy,Western Australia,WA,1.3
+Dairy,Tasmania,Tas,1.3
+Dairy,Northern Territory,NT,

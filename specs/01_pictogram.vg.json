@@ -1,0 +1,123 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "CHART 1 - Pictogram (isotype). Sacks are light green because green means farm output across the page. Each sack icon = 10 points of the ABARES broadacre productivity index (All Australia, ABARES table 1). 1977-78 = 100 so it gets 10 sacks; 2024-25 = 188.67 so it gets 19 sacks (rounded to the nearest whole icon). Because the index measures output per unit of input, the two rows read as 'output from the same bundle of inputs'.",
+  "width": "container",
+  "height": 150,
+  "data": {
+    "url": "data/national_index.csv",
+    "format": {
+      "type": "csv",
+      "parse": {
+        "year": "number",
+        "index": "number",
+        "actual_rebased": "number",
+        "adjusted_rebased": "number",
+        "adjusted_raw": "number"
+      }
+    }
+  },
+  "transform": [
+    {
+      "filter": "datum.fy === '1977–78' || datum.fy === '2024–25'"
+    },
+    {
+      "calculate": "round(datum.index / 10)",
+      "as": "icons"
+    },
+    {
+      "calculate": "sequence(1, datum.icons + 1)",
+      "as": "icon_number"
+    },
+    {
+      "flatten": [
+        "icon_number"
+      ]
+    },
+    {
+      "calculate": "datum.fy",
+      "as": "year_label"
+    }
+  ],
+  "encoding": {
+    "y": {
+      "field": "year_label",
+      "type": "nominal",
+      "sort": [
+        "1977–78",
+        "2024–25"
+      ],
+      "axis": {
+        "title": null,
+        "domain": false,
+        "ticks": false,
+        "labelFontSize": 14,
+        "labelFontWeight": "bold",
+        "labelPadding": 12
+      }
+    }
+  },
+  "layer": [
+    {
+      "description": "One sack shape per icon. The 'shape' is an SVG path drawn in a -1..1 box: a sack body plus a tied neck.",
+      "mark": {
+        "type": "point",
+        "filled": true,
+        "size": 900,
+        "shape": "M-0.55,-0.45 L-0.3,-0.75 L0.3,-0.75 L0.55,-0.45 C0.85,0.05 0.8,0.85 0.5,1 L-0.5,1 C-0.8,0.85 -0.85,0.05 -0.55,-0.45 Z M-0.25,-0.75 L-0.4,-1 L0.4,-1 L0.25,-0.75 Z",
+        "color": "#A9CF94",
+        "opacity": 1
+      },
+      "encoding": {
+        "x": {
+          "field": "icon_number",
+          "type": "quantitative",
+          "scale": {
+            "domain": [
+              0.4,
+              22
+            ]
+          },
+          "axis": null
+        },
+        "tooltip": [
+          {
+            "field": "year_label",
+            "title": "Year"
+          },
+          {
+            "field": "index",
+            "title": "Productivity index",
+            "format": ".1f"
+          }
+        ]
+      }
+    },
+    {
+      "description": "Value label written after the last icon of each row.",
+      "transform": [
+        {
+          "filter": "datum.icon_number === datum.icons"
+        }
+      ],
+      "mark": {
+        "type": "text",
+        "align": "left",
+        "dx": 22,
+        "fontSize": 16,
+        "color": "#F3EEDF",
+        "fontWeight": "bold"
+      },
+      "encoding": {
+        "x": {
+          "field": "icon_number",
+          "type": "quantitative"
+        },
+        "text": {
+          "field": "index",
+          "type": "quantitative",
+          "format": ".0f"
+        }
+      }
+    }
+  ]
+}

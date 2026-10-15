@@ -1,0 +1,171 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "CHART 10 - Slope chart. Climate-adjusted productivity for each state, 1988-89 vs 2024-25 (ABARES table c1). Each state is rebased to its own 1988-89 value = 100 (prepare_data.py), so every line starts at 100 and the right-hand end shows the % change with the weather taken out. Tooltip also shows ABARES's climate-adjusted growth rate (table c7). Label nudges (label_y) only move text so labels do not overlap; the points themselves are exact. Colours match the bump chart: Western Australia teal, South Australia magenta, Northern Territory blue; All Australia black (as the weather-removed line in chart 9); other states grey. The x scale runs past 1 (to 1.55) so the state labels fit inside the plot instead of needing outside padding.",
+  "width": "container",
+  "height": 300,
+  "data": {
+    "url": "data/climate_adjusted_states.csv",
+    "format": {
+      "type": "csv",
+      "parse": {
+        "raw": "number",
+        "rebased": "number",
+        "growth_rate": "number"
+      }
+    }
+  },
+  "transform": [
+    {
+      "calculate": "datum.point === 'start' ? 0 : 1",
+      "as": "x_pos"
+    },
+    {
+      "calculate": "datum.point === 'start' ? '1988–89' : '2024–25'",
+      "as": "year_label"
+    },
+    {
+      "calculate": "datum.rebased + ({SA: 3.2, Aus: 0, Vic: -0.8, Qld: 2.1, NSW: -1.7, NT: 1.9, Tas: -1.5, WA: 0})[datum.abbr]",
+      "as": "label_y"
+    },
+    {
+      "calculate": "(datum.abbr === 'Aus' ? 'All Australia' : datum.abbr) + '  ' + (datum.rebased >= 100 ? '+' : '') + format(datum.rebased - 100, '.0f') + '%'",
+      "as": "label"
+    }
+  ],
+  "encoding": {
+    "x": {
+      "field": "x_pos",
+      "type": "quantitative",
+      "scale": {
+        "domain": [
+          -0.08,
+          1.55
+        ]
+      },
+      "axis": {
+        "title": null,
+        "orient": "top",
+        "values": [
+          0,
+          1
+        ],
+        "labelExpr": "datum.value === 0 ? '1988–89' : '2024–25'",
+        "labelFontSize": 12,
+        "labelFontWeight": "bold",
+        "ticks": false,
+        "domain": false,
+        "grid": false,
+        "labelColor": "#1E1E1E"
+      }
+    },
+    "color": {
+      "field": "abbr",
+      "type": "nominal",
+      "scale": {
+        "domain": [
+          "WA",
+          "SA",
+          "NT",
+          "Aus",
+          "NSW",
+          "Vic",
+          "Qld",
+          "Tas"
+        ],
+        "range": [
+          "#1F7A6B",
+          "#B0417F",
+          "#4A90C2",
+          "#1E1E1E",
+          "#9A968A",
+          "#9A968A",
+          "#9A968A",
+          "#9A968A"
+        ]
+      },
+      "legend": null
+    }
+  },
+  "layer": [
+    {
+      "mark": {
+        "type": "line",
+        "point": {
+          "filled": true,
+          "size": 45
+        }
+      },
+      "encoding": {
+        "y": {
+          "field": "rebased",
+          "type": "quantitative",
+          "scale": {
+            "domain": [
+              95,
+              175
+            ]
+          },
+          "axis": {
+            "title": "Index (each state's 1988–89 = 100)",
+            "tickCount": 5
+          }
+        },
+        "strokeWidth": {
+          "condition": {
+            "test": "datum.abbr === 'Aus'",
+            "value": 3.5
+          },
+          "value": 2
+        },
+        "tooltip": [
+          {
+            "field": "state",
+            "title": "State"
+          },
+          {
+            "field": "fy",
+            "title": "Year"
+          },
+          {
+            "field": "raw",
+            "title": "Climate-adjusted index (ABARES)",
+            "format": ".1f"
+          },
+          {
+            "field": "rebased",
+            "title": "Rebased (1988–89 = 100)",
+            "format": ".1f"
+          },
+          {
+            "field": "growth_rate",
+            "title": "ABARES growth rate (% a year)",
+            "format": "+.1f"
+          }
+        ]
+      }
+    },
+    {
+      "transform": [
+        {
+          "filter": "datum.point === 'end'"
+        }
+      ],
+      "mark": {
+        "type": "text",
+        "align": "left",
+        "dx": 8,
+        "fontSize": 11.5,
+        "fontWeight": "bold"
+      },
+      "encoding": {
+        "y": {
+          "field": "label_y",
+          "type": "quantitative"
+        },
+        "text": {
+          "field": "label"
+        }
+      }
+    }
+  ]
+}
