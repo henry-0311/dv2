@@ -1,6 +1,6 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "description": "CHART 2 - Line chart of the broadacre productivity index for All Australia, 1977-78 to 2024-25 (ABARES table 1). Red dots mark the four harsh seasons: the years where ABARES's actual index is lowest compared with its climate-adjusted index (calculated in prepare_data.py). Hovering shows the value for any year.",
+  "description": "CHART 2 - Line chart of the broadacre productivity index for All Australia, 1977-78 to 2024-25 (ABARES table 1). Vermillion downward triangles mark the four harsh seasons: the years where ABARES's actual index is lowest compared with its climate-adjusted index (calculated in prepare_data.py). Hovering shows the value for any year.",
   "width": "container",
   "height": 300,
   "data": {
@@ -110,7 +110,7 @@
       "encoding": {}
     },
     {
-      "description": "Red dots and labels for the four harshest seasons.",
+      "description": "Harsh seasons: downward triangles in vermillion with their year label. Colour-blind safe: vermillion and green are an Okabe-Ito pair, and the triangle shape and label mean colour is not the only cue.",
       "transform": [
         {
           "filter": "indexof(['1994–95', '2002–03', '2006–07', '2019–20'], datum.fy) >= 0"
@@ -119,10 +119,14 @@
       "layer": [
         {
           "mark": {
-            "type": "circle",
-            "size": 70,
-            "color": "#9E2A2B",
-            "opacity": 1
+            "type": "point",
+            "size": 110,
+            "color": "#D55E00",
+            "opacity": 1,
+            "shape": "triangle-down",
+            "filled": true,
+            "stroke": "#FFFFFF",
+            "strokeWidth": 1
           },
           "encoding": {}
         },
@@ -131,7 +135,7 @@
             "type": "text",
             "dy": 15,
             "fontSize": 11,
-            "color": "#9E2A2B",
+            "color": "#B34700",
             "fontWeight": "bold"
           },
           "encoding": {

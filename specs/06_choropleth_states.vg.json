@@ -147,7 +147,7 @@
       }
     },
     {
-      "description": "State labels (abbreviation + value). Label positions come from the lon/lat columns in state_output_input.csv.",
+      "description": "State labels (abbreviation + value). Label positions come from the lon/lat columns in state_output_input.csv. Victoria's label is nudged 2.2 degrees east so it sits inside Victoria instead of crossing into South Australia.",
       "data": {
         "url": "data/state_growth.csv",
         "format": {
@@ -187,6 +187,14 @@
         {
           "calculate": "isValid(datum.growth) && datum.growth !== '' ? datum.abbr + ' ' + format(datum.growth, '+.1f') + '%' : datum.abbr + ' n/r'",
           "as": "label"
+        },
+        {
+          "calculate": "datum.abbr === 'Vic' ? toNumber(datum.lon) + 2.2 : toNumber(datum.lon)",
+          "as": "label_lon"
+        },
+        {
+          "calculate": "datum.abbr === 'Vic' ? toNumber(datum.lat) + 0.3 : toNumber(datum.lat)",
+          "as": "label_lat"
         }
       ],
       "mark": {
@@ -196,11 +204,11 @@
       },
       "encoding": {
         "longitude": {
-          "field": "lon",
+          "field": "label_lon",
           "type": "quantitative"
         },
         "latitude": {
-          "field": "lat",
+          "field": "label_lat",
           "type": "quantitative"
         },
         "text": {

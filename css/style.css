@@ -6,7 +6,7 @@
     --leaf     mid green   = output
     --canola   mustard     = inputs
     --soil     brown       = below the starting level (in the colour scales)
-    --harsh    dark red    = harsh (dry) seasons
+    --harsh    vermillion  = harsh (dry) seasons (colour-blind safe with green)
     --navy     navy        = Malaysia
 */
 
@@ -15,7 +15,7 @@
   --leaf: #5E9B57;
   --canola: #C99A2E;
   --soil: #8C5A2B;
-  --harsh: #9E2A2B;
+  --harsh: #B34700;    /* text version of the vermillion triangles (darker for contrast) */
   --navy: #1F3A93;
   --paper: #F6F4ED;
   --panel: #FFFFFF;
@@ -137,6 +137,10 @@ p { margin: 0 0 14px; max-width: 33em; }
 .stat span { font-size: 14px; color: var(--muted); display: block; max-width: 13em; }
 .stat.navy { border-color: var(--navy); }
 .stat.navy b { color: var(--navy); }
+
+/* A panel inside a two-column row gets no bottom margin of its own: the row already
+   adds 28px below, so every section ends with the same gap (was 64px in section 4). */
+.row .panel { margin-bottom: 0; }
 
 /* Two charts side by side: panels stretch to the same height and their source lines line up at the bottom. */
 .row.charts { align-items: stretch; }

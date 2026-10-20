@@ -1,6 +1,6 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "description": "CHART 7 - Proportional symbol map with length-proportional bars (map idiom 2; bar symbols appear in the FIT3179 Proportional Symbol Maps notes). Each state has two bars: green = output growth (ABARES table 9) and mustard = input growth (table 8), All industries, % a year, 1977-78 to 2024-25. A bar going up = growth, down = decline. How the bars are drawn: each bar is a 'point' mark whose shape is an SVG path built from the data (calculate step 'bar_path'). With size = 4 the path coordinates are in screen pixels, so 1% a year = 20 px exactly and bars stay vertical on the projected map. The thin outline frame around each pair spans -2% to +2% (framed bars are easier to compare). Bar positions (lon/lat in state_output_input.csv) were chosen by the author to sit inside each state. Projection: Albers conic equal-area, standard parallels 18 S and 36 S. Colour key: the words 'output' (green) and 'inputs' (mustard) in the subtitle, instead of a legend box.",
+  "description": "CHART 7 - Proportional symbol map with length-proportional bars (map idiom 2; bar symbols appear in the FIT3179 Proportional Symbol Maps notes). Each state has two bars: green = output growth (ABARES table 9) and mustard = input growth (table 8), All industries, % a year, 1977-78 to 2024-25. A bar going up = growth, down = decline. How the bars are drawn: each bar is a 'point' mark whose shape is an SVG path built from the data (calculate step 'bar_path'). With size = 4 the path coordinates are in screen pixels, so 1% a year = 20 px exactly and bars stay vertical on the projected map. The thin outline frame around each pair spans -2% to +2% (framed bars are easier to compare). Bar positions (lon/lat in state_output_input.csv) were chosen by the author to sit inside each state. Projection: Albers conic equal-area, standard parallels 18 S and 36 S. A how-to-read key (an example symbol with labels) says the left bar is output and the right bar is input; the subtitle's coloured words repeat this.",
   "width": "container",
   "height": 430,
   "projection": {
@@ -236,12 +236,12 @@
       }
     },
     {
-      "description": "Scale key in the Indian Ocean: a grey bar showing what +1% a year looks like (20 px).",
+      "description": "How-to-read key in the Southern Ocean: one example symbol (frame, zero line, a +1% output bar on the left, a +1% input bar on the right) with labels saying which bar is which and that 1% a year = 20 px.",
       "data": {
         "values": [
           {
-            "lon": 113.5,
-            "lat": -39.5
+            "lon": 114.5,
+            "lat": -44.0
           }
         ]
       },
@@ -250,10 +250,72 @@
           "mark": {
             "type": "point",
             "size": 4,
-            "filled": true,
-            "color": "#8F8F85",
+            "filled": false,
+            "stroke": "#8F887A",
+            "strokeWidth": 1,
             "opacity": 1,
-            "shape": "M-6,0 L6,0 L6,-20 L-6,-20 Z"
+            "shape": "M-19,-40 L19,-40 L19,40 L-19,40 Z"
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            }
+          }
+        },
+        {
+          "mark": {
+            "type": "point",
+            "size": 4,
+            "filled": false,
+            "color": "#6B6B60",
+            "strokeWidth": 1,
+            "opacity": 1,
+            "shape": "M-19,0 L19,0"
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            }
+          }
+        },
+        {
+          "mark": {
+            "type": "point",
+            "size": 4,
+            "filled": true,
+            "color": "#5E9B57",
+            "opacity": 1,
+            "shape": "M-14,0 L-2,0 L-2,-20 L-14,-20 Z"
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            }
+          }
+        },
+        {
+          "mark": {
+            "type": "point",
+            "size": 4,
+            "filled": true,
+            "color": "#C99A2E",
+            "opacity": 1,
+            "shape": "M2,0 L14,0 L14,-20 L2,-20 Z"
           },
           "encoding": {
             "longitude": {
@@ -270,9 +332,61 @@
           "mark": {
             "type": "text",
             "align": "left",
-            "dx": 10,
-            "dy": -10,
-            "fontSize": 11,
+            "baseline": "middle",
+            "dx": 26,
+            "dy": -24,
+            "fontSize": 11.5,
+            "fontWeight": "bold",
+            "color": "#3D7A3F"
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "text": {
+              "value": "Left bar: output growth"
+            }
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "baseline": "middle",
+            "dx": 26,
+            "dy": -9,
+            "fontSize": 11.5,
+            "fontWeight": "bold",
+            "color": "#9A7419"
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "text": {
+              "value": "Right bar: input growth"
+            }
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "baseline": "middle",
+            "dx": 26,
+            "dy": 8,
+            "fontSize": 11.5,
+            "fontWeight": "normal",
             "color": "#4A4A42"
           },
           "encoding": {
@@ -285,7 +399,32 @@
               "type": "quantitative"
             },
             "text": {
-              "value": "= +1% a year"
+              "value": "Bar height: 20 px = 1% a year"
+            }
+          }
+        },
+        {
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "baseline": "middle",
+            "dx": 26,
+            "dy": 23,
+            "fontSize": 11.5,
+            "fontWeight": "normal",
+            "color": "#4A4A42"
+          },
+          "encoding": {
+            "longitude": {
+              "field": "lon",
+              "type": "quantitative"
+            },
+            "latitude": {
+              "field": "lat",
+              "type": "quantitative"
+            },
+            "text": {
+              "value": "Frame: −2% to +2%"
             }
           }
         }

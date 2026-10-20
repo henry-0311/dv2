@@ -1,6 +1,6 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "description": "CHART 9 - Two-line chart. Actual broadacre productivity (ABARES table 1) and ABARES's climate-adjusted productivity (table c1), All Australia, 1988-89 to 2024-25. ABARES publishes the two on different scales (the climate-adjusted index is not 100 in its first year), so both are rebased here to 1988-89 = 100 (prepare_data.py) to compare their shapes. Red dots = the four harsh seasons also marked in chart 2. The coloured words 'Actual' and 'weather removed' in the subtitle act as the colour key, so the plot can use the full panel width.",
+  "description": "CHART 9 - Two-line chart. Actual broadacre productivity (ABARES table 1) and ABARES's climate-adjusted productivity (table c1), All Australia, 1988-89 to 2024-25. ABARES publishes the two on different scales (the climate-adjusted index is not 100 in its first year), so both are rebased here to 1988-89 = 100 (prepare_data.py) to compare their shapes. Vermillion downward triangles = the four harsh seasons also marked in chart 2. The coloured words 'Actual' and 'weather removed' in the subtitle act as the colour key, so the plot can use the full panel width.",
   "width": "container",
   "height": 300,
   "data": {
@@ -155,10 +155,14 @@
         }
       ],
       "mark": {
-        "type": "circle",
-        "size": 60,
-        "color": "#9E2A2B",
-        "opacity": 1
+        "type": "point",
+        "size": 90,
+        "color": "#D55E00",
+        "opacity": 1,
+        "shape": "triangle-down",
+        "filled": true,
+        "stroke": "#FFFFFF",
+        "strokeWidth": 1
       },
       "encoding": {
         "tooltip": [
